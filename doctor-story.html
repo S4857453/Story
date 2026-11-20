@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>من غرفة العمليات</title>
+<style>
+:root{--bg:#0b0d14;--fg:#f3efe8;--mute:#9aa0b4;--red:#e5484d;--gold:#e9b86b;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",sans-serif;overflow:hidden}
+#stage{position:relative;height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;background:radial-gradient(circle at 50% 35%,#1d2236 0%,var(--bg) 70%)}
+#tag{color:var(--gold);font-size:14px;letter-spacing:1px;height:20px;opacity:0;transition:opacity .8s}
+#heart{width:120px;height:120px;margin:18px 0}
+#heart path{fill:var(--red)}
+.beat{animation:beat 1s infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.18)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+#ecg{width:100%;height:60px}
+#ecg path{fill:none;stroke:var(--red);stroke-width:2.5;stroke-dasharray:600;stroke-dashoffset:600;animation:draw 2.4s linear infinite}
+@keyframes draw{to{stroke-dashoffset:-600}}
+#line{font-size:24px;line-height:1.8;min-height:130px;margin-top:14px;opacity:0;transform:translateY(12px);transition:opacity .9s,transform .9s}
+#line.on{opacity:1;transform:none}
+#tag.on{opacity:1}
+#bar{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:24px;right:24px;height:3px;background:#262b3f;border-radius:2px}
+#fill{height:100%;width:0;background:var(--gold);border-radius:2px}
+#btn{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:16px;background:#262b3f;color:var(--fg);border:0;border-radius:20px;padding:8px 16px;font:inherit;font-size:14px}
+#end{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(11,13,20,.92);font-size:26px;line-height:2;padding:24px}
+#end small{color:var(--mute);font-size:15px}
+#end b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <button id="btn">▶ ابدأ</button>
+  <div id="tag"></div>
+  <svg id="heart" viewBox="0 0 24 24" class="beat"><path d="M12 21s-8-5.4-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.6-8 11-8 11z"/></svg>
+  <svg id="ecg" viewBox="0 0 300 60" preserveAspectRatio="none"><path d="M0 30H70l8-6 8 6h10l6-26 8 50 8-24h20l8-6 8 6H300"/></svg>
+  <div id="line"></div>
+  <div id="end"><div>زوروا من تحبّون<br><b>قبل أن يصبح الوقت متأخرًا</b></div><small>د. راكان ناظر · من غرفة العمليات</small></div>
+  <div id="bar"><div id="fill"></div></div>
+</div>
+<script>
+const scenes=[
+ [0,4,"د. راكان ناظر يروي","في عملي أرى مرضى كثيرين…<br>لكن هذه القصة لا أنساها."],
+ [4,8,"من غرفة العمليات","ملحّن أغانٍ مشهور،<br>خرج للتوّ من عملية قلب مفتوح."],
+ [8,13,"لم يزره أحد","أهله لم يأتوا ولو مرة.<br>لكن كل يوم، في الموعد نفسه،<br>تدخل فتاة."],
+ [13,17,"فرق عشرين سنة","أحبّته… ولم تعبأ بالفارق.<br>تجلس بقربه وتمسك يده<br>حتى ينام."],
+ [17,26,"","كان يؤلّف الألحان للجميع…<br>وكانت هي اللحن الوحيد<br>الذي بقي.<br><span style='color:var(--gold)'>الحب الحقيقي لا يسأل عن العمر.</span>"]
+];
+const voice=["في نشرتنا الإنسانية: الدكتور راكان ناظر يروي قصة لا تُنسى.","ملحّن أغانٍ معروف، يخرج من عملية قلب مفتوح داخل غرفة العمليات.","لم يزره أحد من أهله ولو مرة واحدة. لكن فتاة تدخل عليه كل يوم، في الموعد نفسه.","أحبّته رغم فرق العشرين عامًا، وجلست إلى جانبه تمسك يده حتى ينام.","كان يؤلّف الألحان للجميع، وكانت هي اللحن الوحيد الذي بقي. الحب الحقيقي لا يسأل عن العمر. زوروا من تحبّون، قبل أن يصبح الوقت متأخرًا."];
+function speak(i){try{const u=new SpeechSynthesisUtterance(voice[i]);u.lang='ar-SA';const v=speechSynthesis.getVoices().find(x=>x.lang&&x.lang.toLowerCase().startsWith('ar'));if(v)u.voice=v;u.rate=.92;u.pitch=.75;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+try{speechSynthesis.getVoices();}catch(e){}
+let ac,mg,mt,pads=[];
+function stopMusic(){try{clearInterval(mt);if(mg){mg.gain.cancelScheduledValues(ac.currentTime);mg.gain.linearRampToValueAtTime(0,ac.currentTime+1.5);}const p=pads;pads=[];setTimeout(()=>p.forEach(o=>{try{o.stop();}catch(e){}}),1600);}catch(e){}}
+function startMusic(){try{stopMusic();ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();mg=ac.createGain();mg.gain.setValueAtTime(0,ac.currentTime);mg.gain.linearRampToValueAtTime(.12,ac.currentTime+2.5);mg.connect(ac.destination);
+[110,164.81,220].forEach(f=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.value=.16;o.connect(g);g.connect(mg);o.start();pads.push(o);});
+const n=[220,261.63,329.63,392,329.63,261.63,246.94,293.66,349.23,440,349.23,293.66];let i=0;
+const play=()=>{const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.type='triangle';o.frequency.value=n[i++%n.length];g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.45,t+.05);g.gain.exponentialRampToValueAtTime(.001,t+1.9);o.connect(g);g.connect(mg);o.start(t);o.stop(t+2);};
+play();mt=setInterval(play,750);}catch(e){}}
+const $=id=>document.getElementById(id);
+let t0=0,raf=0,cur=-1;
+function show(i){
+  const s=scenes[i];cur=i;speak(i);
+  $('line').classList.remove('on');$('tag').classList.remove('on');
+  setTimeout(()=>{$('line').innerHTML=s[3];$('tag').textContent=s[2];$('line').classList.add('on');$('tag').classList.add('on');},450);
+}
+function tick(now){
+  const t=(now-t0)/1000;
+  $('fill').style.width=Math.min(t/26*100,100)+'%';
+  const i=scenes.findIndex(s=>t>=s[0]&&t<s[1]);
+  if(i>-1&&i!==cur)show(i);
+  if(t>=22.5)$('end').style.display='flex';
+  if(t<26)raf=requestAnimationFrame(tick);else{stopMusic();$('btn').textContent='↻ إعادة';$('btn').style.display='block';}
+}
+function start(){
+  cancelAnimationFrame(raf);cur=-1;try{speechSynthesis.cancel();}catch(e){}startMusic();$('end').style.display='none';
+  $('btn').style.display='none';$('line').classList.remove('on');$('tag').classList.remove('on');
+  t0=performance.now();raf=requestAnimationFrame(tick);
+}
+$('btn').onclick=start;
+</script>
+</body>
+</html>
